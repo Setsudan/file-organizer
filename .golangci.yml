@@ -1,0 +1,12 @@
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - errcheck
+    - gosec
+    - revive
+    - staticcheck
+
+run:
+  timeout: 3m

@@ -1,100 +1,91 @@
-# File Organizer: Automated Downloads Sorting
+# File Organizer
 
-Welcome to the **File Organizer** project! This **Go** script automatically organizes the contents of your **Downloads** folder into predefined categories (Documents, Videos, Audio, Pictures, etc.). It moves any files it recognizes into a “Downloaded ___” folder within the appropriate directory, all based on file extensions.
-
----
+File Organizer sorts files from your Downloads directory into category folders.
+It supports both one-shot execution and continuous watch mode.
 
 ## Features
 
-1. **Future-Proof File Paths**:  
-   Automatically locates a user’s home directory and derives all needed paths (Documents, Videos, Music, Pictures, Others) without any hardcoding.
+- Dual mode runtime: `once` and `watch`
+- Safe file move behavior with name conflict protection
+- Cross-device fallback (copy then remove if rename cannot cross filesystems)
+- Temporary download file filtering
+- Expanded categories: images, videos, audio, files, archives, executable, code, others
+- Configurable source/target directories through JSON config
 
-2. **Comprehensive File Categories**:  
-   Groups files by extensions for Documents, Videos, Audio, and Pictures. Customize it by adding or removing categories in the `fileCategories` map.
+## Requirements
 
-3. **Car-Themed Easter Egg**:  
-   Keep an eye out for the fun tribute to endurance racing and cars!
+- [Go](https://go.dev/) 1.23.4 or newer
+- Windows, macOS, or Linux
 
-4. **Developer-Friendly**:  
-   Code is structured to mix simple OOP practices with functional helpers, ensuring clarity and maintainability.
+## Build
 
-5. **Startup Execution**:  
-   Optionally run the program at system startup to keep your downloads sorted automatically.
+```bash
+go build -o file-organizer ./cmd/file-organizer
+```
 
----
+## Usage
 
-## Getting Started
+Run one pass:
 
-1. **Prerequisites**  
-   - [Go](https://golang.org/) (1.18 or higher recommended)
-   - A computer running Windows, macOS, or Linux
+```bash
+go run ./cmd/file-organizer --mode=once
+```
 
-2. **Download or Clone This Repo**  
+Run continuously:
 
-   ```bash
-   git clone https://github.com/setsudan/file-organizer-go.git
-   cd file-organizer-go
-   ```
+```bash
+go run ./cmd/file-organizer --mode=watch
+```
 
-3. **Build the Executable**  
+Useful flags:
 
-   ```bash
-   go build -o file-organizer
-   ```
+- `--config <path>`: optional config JSON
+- `--source <path>`: override source directory
+- `--interval 3s`: watch loop interval
+- `--stable-for 5s`: minimum file age before processing
+- `--verbose`: debug logging
 
-   - On Windows, you may want to hide the console window:
+## Default target folders
 
-     ```bash
-     go build -ldflags="-H=windowsgui" -o file-organizer.exe
-     ```
+By default, all category folders are created inside `~/Downloads`:
 
-4. **Run the Script**  
+- `~/Downloads/Downloaded Images`
+- `~/Downloads/Downloaded Videos`
+- `~/Downloads/Downloaded Audio`
+- `~/Downloads/Downloaded Files`
+- `~/Downloads/Downloaded Archives`
+- `~/Downloads/Downloaded Executables`
+- `~/Downloads/Downloaded Code`
+- `~/Downloads/Downloaded Others`
 
-   ```bash
-   ./file-organizer
-   ```
+## Optional config file
 
-   The script will:
-   1. Look in your **Downloads** folder
-   2. Identify each file’s category
-   3. Move files to a `Downloaded [Category]` folder inside **Documents**, **Videos**, **Music**, **Pictures**, or **Others**.
+```json
+{
+  "sourceDir": "C:/Users/you/Downloads",
+  "targets": {
+    "images": "C:/Users/you/Downloads",
+    "videos": "C:/Users/you/Downloads",
+    "audio": "C:/Users/you/Downloads",
+    "files": "C:/Users/you/Downloads",
+    "archives": "C:/Users/you/Downloads",
+    "executable": "C:/Users/you/Downloads",
+    "code": "C:/Users/you/Downloads",
+    "others": "C:/Users/you/Downloads"
+  },
+  "tempExtensions": [".crdownload", ".part", ".tmp", ".opdownload", ".download"]
+}
+```
 
----
+## Development
 
-## Run on Startup (Windows Example)
-
-1. **Generate Executable** (see above).
-2. **Open Your Startup Folder**  
-   Press **Win + R**, type `shell:startup`, and hit Enter.
-3. **Place or Link** the compiled `.exe` in this folder.  
-   Your file organizer will now run automatically every time you log in, quietly sorting your downloads.
-
----
-
-## Customizing
-
-- **File Categories**  
-  Open the script and locate the `fileCategories` map. Add or remove extensions as you see fit.
-- **Directory Paths**  
-  If you want to change the target folders, edit the code where it assigns `docDir`, `videoDir`, etc. But by default, it uses system directories in your home folder.
-- **Logging / Feedback**  
-  Feel free to adjust or remove the console output for a more silent experience.
-
----
-
-## Contributing
-
-Feel free to fork this repository and submit pull requests with improvements:
-
-- Adding new categories
-- Improving file extension coverage
-- Enhancing code clarity
-- Expanding OS compatibility
-
----
+```bash
+make fmt
+make vet
+make test
+make build
+```
 
 ## License
 
-This project is distributed under the **MIT License**. Please see the [LICENSE](LICENSE) file for details.
-
----
+MIT. See [LICENSE](LICENSE).
